@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TeslaSimLabExtensions;
 
 namespace TeslaSimLab
 {
     /// <summary>
-    /// Содержит физические свойства колеса.
+    /// Содержит физические свойства колеса
     /// </summary>
     internal class Wheel
     {
-        public Wheel(double diameter, double motorMoment, double forceAngle = 0)
+        public Wheel(double diameter, double motorTorque, double forceAngle = 0)
         {
             Diameter = diameter;
             ForceAngle = forceAngle;
-            MotorMoment = motorMoment;
+            MotorTorque = motorTorque;
         }
+
 
         /// <summary>
         /// Диаметр колеса. 
@@ -37,10 +33,8 @@ namespace TeslaSimLab
                 Diameter = value / 1000;
             }
         } 
-
         /// <summary>
-        /// Угол движущей силы колеса.
-        /// Задается в градусах, хранится в радианах.
+        /// Угол движущей силы колеса в радианах.
         /// </summary>
         public double ForceAngle
         { 
@@ -50,43 +44,58 @@ namespace TeslaSimLab
             }
             set
             {
-                if (value <= -90)
-                    throw new ArgumentOutOfRangeException("Angle range must be in [-90;90]");
+                if (value <= -Math.PI / 2 || value >= Math.PI / 2) 
+                    throw new ArgumentOutOfRangeException("Angle range must be in (-PI/2 ; PI/2)");
 
-                ForceAngle = value.ToRadians();
+                ForceAngle = value;
             }
         } 
-
         /// <summary>
         /// Крутящий момент мотора колеса Н*м.
         /// </summary>
-        public double MotorMoment
+        public double MotorTorque
         { 
             get
             {
-                return MotorMoment;
+                return MotorTorque;
             }
             set
             {
                 if (value <= 0)
                     throw new ArgumentOutOfRangeException("Moment must be positive number");
 
-                MotorMoment = value;
+                MotorTorque = value;
             }
         } 
-
-        public Vector GetForce (double power)
+        /// <summary>
+        /// Установленная мощность мотора
+        /// </summary>
+        public double Power
         {
-            if (power > 1)
-                power = 1;
-            else if (power < -1)
-                power = -1;
-
-            return new Vector
+            get { return Power; }
+            set 
             {
-                X = -power * 2 * MotorMoment / Diameter * Math.Cos(ForceAngle) * Math.Sin(ForceAngle),
-                Y = power * 2 * MotorMoment / Diameter * Math.Cos(ForceAngle) * Math.Cos(ForceAngle)
-            };
+                if (value > 1)
+                    Power = 1;
+                else if (value < -1)
+                    Power = -1;
+                else
+                    Power = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Вычисляет силу, с которой колесо действует на поверность
+        /// </summary>
+        /// <returns>Вектор движущей силы</returns>
+        public Vector GetForce ()
+        {
+            return Power != 0 ? new Vector
+            {
+                X = -Power * 2 * MotorTorque / Diameter * Math.Cos(ForceAngle) * Math.Sin(ForceAngle),
+                Y = Power * 2 * MotorTorque / Diameter * Math.Cos(ForceAngle) * Math.Cos(ForceAngle)
+            } : new Vector { X = 0, Y = 0 };
         }
     }
 }

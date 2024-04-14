@@ -9,7 +9,7 @@ namespace TeslaSimLabExtensions
     internal static class Extensions
     {
         /// <summary>
-        /// Переводит градусы в радианы.
+        /// Переводит градусы в радианы
         /// </summary>
         /// <param name="value"> Угол в градусах </param>
         /// <returns> Радианы </returns>
