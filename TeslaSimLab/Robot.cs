@@ -85,13 +85,13 @@ namespace TeslaSimLab
         /// <summary>
         /// Кинематические характеристики робота
         /// </summary>
-        public Vector Velocity { get; private set; }
+        public Vector Velocity;
         public Vector Acceleration { get; private set; }
         public double AngularSpeed { get; private set; }
         public double AngularAcceleration { get; private set; }
-        public Vector Position { get; private set; }
+        public Vector Position;
         public double Heading { get; private set; }
-        public Vector InnerForce 
+        public Vector InternalForce 
         { 
             get
             {
@@ -105,7 +105,7 @@ namespace TeslaSimLab
                 return force;
             }
         }
-        public double InnerTorque 
+        public double InternalTorque 
         { 
             get
             {
@@ -130,6 +130,42 @@ namespace TeslaSimLab
         /// Структурные характеристики робота
         /// </summary>
         private Wheel[] Wheels;
+        public List<Vector> Corners 
+        {
+            get
+            {
+                var list = new List<Vector>
+                {
+                    new Vector
+                    {
+                        X = -Width / 2,
+                        Y = Length / 2
+                    },
+                    new Vector
+                    {
+                        X = Width / 2,
+                        Y = Length / 2
+                    },
+                    new Vector
+                    {
+                        X = -Width / 2,
+                        Y = -Length / 2
+                    },
+                    new Vector
+                    {
+                        X = Width / 2,
+                        Y = -Length / 2
+                    }
+                };
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    list[i] = list[i].TurnBy(Heading) + Position;
+                }
+
+                return list;
+            }
+        }
 
 
         /// <summary>
@@ -152,6 +188,5 @@ namespace TeslaSimLab
         {
             Wheels[Config.Wheel(wheelname)].Power = power;
         }
-
     }
 }

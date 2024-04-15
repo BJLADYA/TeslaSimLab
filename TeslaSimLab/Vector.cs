@@ -8,13 +8,8 @@ using TeslaSimLabExtensions;
 
 namespace TeslaSimLab
 {
-    internal class Vector
+    internal struct Vector
     {
-        public Vector() 
-        {
-            X = 0;
-            Y = 0;
-        }
         public Vector(double x, double y) 
         {
             X = x; 
@@ -27,8 +22,8 @@ namespace TeslaSimLab
         }
 
 
-        public double X { get; set; }
-        public double Y { get; set; }
+        public double X;
+        public double Y;
         public double Length { get { return Math.Sqrt(X * X + Y * Y); } }
         public double LengthSquared { get { return X * X + Y * Y; } }
         /// <summary>
